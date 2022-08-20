@@ -41,15 +41,15 @@ fn main() {
 }
 
 fn print_docs() {
-    println!( "############## website blocker docs ##################" );
-    println!( "-Enter a Command followed by = and the url (website.com) with no spaces" );
-    println!( "--uncom => brings back previously commented out websites" );
-    println!( "--com => removes websites by commenting them out" );
-    println!( "--add => adds a new website to the list" );
-    println!( "--del => permanently deletes a website from the list" );
-    println!( "--help => help command" );
-    println!( "ex : webblk add youtube.com" );
-    println!( "######################################################" );
+    println!( "USAGE:" );
+    println!( "   website-blocker.exe [COMMAND] [arg]" );
+    println!( "                                ^ arg is a website => website.com" );
+    println!( "    -uncom => brings back previously commented out websites" );
+    println!( "    -com => removes websites by commenting them out" );
+    println!( "    -add => adds a new website to the list" );
+    println!( "    -del => permanently deletes a website from the list" );
+    println!( "    -help => help command" );
+    println!( "" );
 }
 
 fn collect_vars() -> Task {
@@ -57,40 +57,47 @@ fn collect_vars() -> Task {
     let args: Vec<String> = env::args().collect();
 
     if args.len() == 1 {
-        println!( "insert an commad" );
+        print_docs();
         exit( 0 );
     }
 
-    let split_arg:Vec<&str> = args[1].split( '=' ).collect();
-    let task:Task;
-
-    if split_arg[0] == "uncom" {
-        task = Task { 
-            task: TASK_UNCOMMENT, 
-            text: split_arg[1].to_string(),
-        }
-    }
-    else if split_arg[0] == "com" {
-        task = Task { 
-            task: TASK_COMMENT, 
-            text: split_arg[1].to_string(),
-        }
-    }
-    else if split_arg[0] == "add" {
-        task = Task { 
-            task: TASK_ADD, 
-            text: split_arg[1].to_string(),
-        }
-    }
-    else if split_arg[0] == "del" {
-        task = Task { 
-            task: TASK_DELETE, 
-            text: split_arg[1].to_string(),
-        }
-    }
-    else if split_arg[0] == "help" {
+    else if args[1] == "help" || args[1] == "-help"  {
         print_docs();
         exit(0)
+    }
+
+    if args.len() == 2 {
+        println!( "insert an arguement" );
+        exit( 0 );
+    }
+
+    let task:Task;
+    let arg_1 = &args[1];
+    let arg_2 = &args[2];
+
+    if arg_1 == "-uncom" {
+        task = Task { 
+            task: TASK_UNCOMMENT, 
+            text: arg_2.to_string(),
+        }
+    }
+    else if arg_1 == "-com" {
+        task = Task { 
+            task: TASK_COMMENT, 
+            text: arg_2.to_string(),
+        }
+    }
+    else if arg_1 == "-add" {
+        task = Task { 
+            task: TASK_ADD, 
+            text:arg_2.to_string(),
+        }
+    }
+    else if arg_1 == "-del" {
+        task = Task { 
+            task: TASK_DELETE, 
+            text: arg_2.to_string(),
+        }
     }
     else {
         println!( "wrong command supplied" );
@@ -178,7 +185,7 @@ fn write_after_mark( mark_contents:String ) {
     _ = fs::write( FILE_PATH, new_contents );
 
     _ = Command::new("cmd")
-                    .args( [ "/C", "ipconfig /flushdns" ] )
+                    .args( [ "ipconfig /flushdns" ] )
                     .output()
                     .expect("failed to execute process");
 }
@@ -189,8 +196,6 @@ fn add_reroute_to_target( target:String ) -> String {
     s.insert_str(0, "   " );
     s.insert_str(0, REROUTE );
     s.insert_str(0, "    " );
-
-    println!( "{s}" );
 
     return s;
 }
