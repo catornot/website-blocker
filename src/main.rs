@@ -10,6 +10,7 @@ const TASK_UNCOMMENT:u8 = 0;
 const TASK_COMMENT:u8 = 1;
 const TASK_ADD:u8 = 2;
 const TASK_DELETE:u8 = 3;
+const TASK_PRINT:u8 = 4;
 const REROUTE: &str = "127.0.0.1";
 
 struct Task {
@@ -35,6 +36,7 @@ fn main() {
             TASK_COMMENT => comment( contents, task.text ),
             TASK_ADD => add( contents, task.text ),
             TASK_DELETE => delete( contents, task.text ),
+            TASK_PRINT => print!(""),
             1_u8..=u8::MAX => println!( "how" )
         }
     }
@@ -43,11 +45,12 @@ fn main() {
 fn print_docs() {
     println!( "USAGE:" );
     println!( "   website-blocker.exe [COMMAND] [arg]" );
-    println!( "                                ^ arg is a website => website.com" );
+    println!( "                                 ^ arg is a website => website.com" );
     println!( "    -uncom => brings back previously commented out websites" );
     println!( "    -com => removes websites by commenting them out" );
     println!( "    -add => adds a new website to the list" );
     println!( "    -del => permanently deletes a website from the list" );
+    println!( "    -prt => just prints hosts content" );
     println!( "    -help => help command" );
     println!( "" );
 }
@@ -96,6 +99,12 @@ fn collect_vars() -> Task {
     else if arg_1 == "-del" {
         task = Task { 
             task: TASK_DELETE, 
+            text: arg_2.to_string(),
+        }
+    }
+    else if arg_1 == "-prt" {
+        task = Task { 
+            task: TASK_PRINT, 
             text: arg_2.to_string(),
         }
     }
