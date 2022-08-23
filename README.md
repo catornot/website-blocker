@@ -12,4 +12,4 @@ blocks websites on windows
 7. Click New
 8. Enter the path to `website-blocker.exe`
 9. Click Ok
-10. Your are Done :)
+10. You are are Done :)
